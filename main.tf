@@ -22,7 +22,7 @@ locals {
   }
 }
 
-# skapar huvudmappen
+# skapar backupmappen
 resource "terraform_data" "backup_folder" {
   triggers_replace = [local.backup_dir]
 
@@ -34,9 +34,8 @@ resource "terraform_data" "backup_folder" {
 
 # skapar konfigurationsfilen
 resource "local_file" "config" {
-  filename = "${path.module}/teobackups/config.json"
-  content  = jsonencode(local.backup_config)
-
+  filename = "${local.backup_dir}/config.json"
+  content = jsonencode(local.backup_config)
   depends_on = [terraform_data.backup_folder]
 }
 
@@ -54,8 +53,9 @@ resource "local_file" "backup_info" {
   depends_on = [terraform_data.backup_folder]
 }
 
-#  startar powerShell efter att terraform har konfigurerat
+#  startar powerShell script backupandrestore.ps1
 resource "terraform_data" "run_backup" {
+
   triggers_replace = [
     local.source_dir,
     local.backup_dir,
@@ -64,7 +64,14 @@ resource "terraform_data" "run_backup" {
 
   provisioner "local-exec" {
     command = "& '${path.module}/BackupAndRestore.ps1' -ConfigPath '${local_file.config.filename}'"
-    interpreter = ["PowerShell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
+
+    interpreter = [
+      "PowerShell",
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-Command"
+    ]
   }
 
   depends_on = [
