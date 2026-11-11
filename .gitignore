@@ -1,8 +1,0 @@
-/*
-!/.gitignore
-!/README.md
-!/backupandrestore.ps1
-!/test-checker.ps1
-!/main.tf
-!/variables.tf
-!/outputs.tf
