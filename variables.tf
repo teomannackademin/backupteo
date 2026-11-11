@@ -4,7 +4,7 @@ variable "source_dir" {
   type        = string
   description = "Mappen som ska säkerhetskopieras"
 
-  default = "data"
+  default = "C:\\Users\\PC\\Documents"
 }
 
 # vilka filändelser som ska inte tas med
